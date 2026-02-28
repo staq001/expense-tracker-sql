@@ -1,0 +1,38 @@
+version: "3.9"
+services:
+  api-node:
+    image: api-node
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: dev
+    init: true
+    volumes:
+      - type: bind
+        source: ./
+        target: /usr/src/app
+      - type: volume
+        target: /usr/src/app/node_modules
+    depends_on:
+      - db
+    environment:
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
+      - DATABASE_URL=${DATABASE_URL}
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+  db:
+    image: postgres:17.6-alpine3.22
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=${PG_DB}
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_PASSWORD=${PG_PASS}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+volumes:
+  pgdata:

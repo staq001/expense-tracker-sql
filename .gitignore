@@ -1,0 +1,7 @@
+.env
+node_modules
+.qodo
+.idea
+.vscode
+package-lock.json
+.npm
